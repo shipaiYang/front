@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>搜索选择框</title>
+    <link rel="stylesheet" href="../common/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../bootstrapselect/css/bootstrap-select.min.css">
+    <style>
+        .bootstrap-select .btn-default{
+                background-color: white;
+                border:1px solid #eee;
+            
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <select id="systemSearch" class="selectpicker" data-live-search="true" title="请选择系统"></select>
+        <button class="btn btn-default" onclick="reset()">重置</button>
+    </div>
+
+    <script type="text/javascript" src="../common/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../common/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../bootstrapselect/js/bootstrap-select.min.js"></script>
+    <script type="text/javascript" src="../bootstrapselect/js/defaults-zh_CN.min.js"></script>
+    <script>
+        $(function(){
+
+            onSearch();   
+
+        });
+
+        function onSearch(){
+
+            //获取下拉框数据
+            $("#systemSearch").on('loaded.bs.select', function (e) {
+                    //输入框输入数据时触发
+                    $("#systemSearch").prev().find('.bs-searchbox').find('input').keyup(function () {
+                        //获取输入的值
+                        var inputSystemName = $('.bs-searchbox  input').val();
+                        //输入的值不为空，则发起请求
+                        if (inputSystemName != '') {
+                            $.ajax({
+                                url: '127.0.0.1/XXX',
+                                type: 'get',
+                                data: {
+                                    systemName:inputSystemName
+                                },
+                                dataType: 'json',
+                                success: function (data) {
+                                    $("#systemSearch").empty();
+                                    if (data != null) {
+                                        for (var i = 0; i < data.length; i++) {
+                                            $("#systemSearch").append('<option value="' + data[i].systemId + '">' + data[i].systemName + '</option>');
+                                        }
+                                    }
+                                    $('#systemSearch').selectpicker('refresh');
+                                    $('#systemSearch').selectpicker('render');
+                                }
+                            });
+                        }
+                    });
+                });
+
+        }
+
+        function reset(){
+            $('#systemSearch').val('');
+            $('#systemSearch').selectpicker('refresh');
+        }
+        
+            
+    </script>
+</body>
+</html>
